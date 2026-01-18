@@ -5,7 +5,7 @@ services:
     image: mongo:7
     restart: unless-stopped
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_USERNAME: master  # <--- Mudei de 'admin' para 'master'
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
     volumes:
       - mongodb_data:/data/db
@@ -15,11 +15,10 @@ services:
   backend:
     build: ./backend
     restart: unless-stopped
-    # REMOVA A SEÇÃO 'ports' AQUI
-    # O Coolify vai ler o EXPOSE 5000 do Dockerfile automaticamente
     environment:
       NODE_ENV: production
-      MONGODB_URI: mongodb://admin:${MONGO_PASSWORD}@mongodb:27017/mtg-cards?authSource=admin
+      # Abaixo, mudei 'admin' para 'master' logo depois de 'mongodb://'
+      MONGODB_URI: mongodb://master:${MONGO_PASSWORD}@mongodb:27017/mtg-cards?authSource=admin
       JWT_SECRET: ${JWT_SECRET}
       CORS_ORIGIN: ${FRONTEND_URL}
     depends_on:
