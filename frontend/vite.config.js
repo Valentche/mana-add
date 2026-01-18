@@ -1,10 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
-import { fileURLToPath } from 'url' // <--- 1. Importar isto
+import { fileURLToPath } from 'url'
 import tailwindcss from '@tailwindcss/vite'
 
-// 2. Criar o __dirname manualmente (pois não existe em "type": "module")
+// Criação manual do __dirname para módulos ES
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({

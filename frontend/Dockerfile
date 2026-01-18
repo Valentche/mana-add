@@ -2,7 +2,11 @@
 FROM node:20-alpine as build
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+
+# CORREÇÃO CRÍTICA: --include=dev garante que o Vite seja instalado
+# mesmo que o Coolify defina NODE_ENV=production
+RUN npm install --include=dev
+
 COPY . .
 RUN npm run build
 
