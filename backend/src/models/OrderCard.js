@@ -1,16 +1,4 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-export default function ModelOrderCard() {
-  return (
-    <div className="p-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>backend/src/models/OrderCard.js</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-xs">
-{`const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 const orderCardSchema = new mongoose.Schema({
   order_id: {
@@ -40,10 +28,4 @@ const orderCardSchema = new mongoose.Schema({
   added_by_name: String
 }, { timestamps: true });
 
-module.exports = mongoose.model('OrderCard', orderCardSchema);`}
-          </pre>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
+module.exports = mongoose.model('OrderCard', orderCardSchema);

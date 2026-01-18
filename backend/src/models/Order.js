@@ -1,40 +1,21 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+const mongoose = require('mongoose');
 
-export default function ModelUser() {
-  return (
-    <div className="p-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>backend/src/models/User.js</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-xs">
-{`const mongoose = require('mongoose');
-
-const userSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  password: {
+const orderSchema = new mongoose.Schema({
+  group_id: {
     type: String,
     required: true
   },
-  full_name: String,
-  display_name: String,
-  role: {
+  name: {
     type: String,
-    enum: ['user', 'admin'],
-    default: 'user'
-  }
+    required: true
+  },
+  status: {
+    type: String,
+    enum: ['open', 'closed', 'ordered', 'arrived'],
+    default: 'open'
+  },
+  deadline: Date,
+  created_by: String
 }, { timestamps: true });
 
-module.exports = mongoose.model('User', userSchema);`}
-          </pre>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
+module.exports = mongoose.model('Order', orderSchema);
