@@ -1,12 +1,16 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
-import tailwindcss from '@tailwindcss/vite' // 1. Adicionei a importação aqui
+import { fileURLToPath } from 'url' // <--- 1. Importar isto
+import tailwindcss from '@tailwindcss/vite'
+
+// 2. Criar o __dirname manualmente (pois não existe em "type": "module")
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   plugins: [
     react(),
-    tailwindcss() // 2. Adicionei o plugin aqui
+    tailwindcss()
   ],
   resolve: {
     alias: {
