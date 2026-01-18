@@ -1,13 +1,10 @@
-import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { client } from './api/client';
 import Layout from './Layout';
 import Home from './pages/Home';
 import GroupDetail from './pages/GroupDetail';
 import OrderDetail from './pages/OrderDetail';
-import { Loader2 } from 'lucide-react';
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/sonner"; // Verifique se o caminho está certo no seu projeto
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,52 +16,29 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
+  // TRUQUE: Forçamos o sistema a achar que estamos sempre logados
+  // e que não há carregamento pendente.
+  const isAuthenticated = true; 
+  const loading = false;
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        await client.auth.me();
-        setIsAuthenticated(true);
-      } catch (error) {
-        // Erro 401 é normal aqui (usuário não logado)
-        console.log("Usuário não está logado");
-        setIsAuthenticated(false);
-      } finally {
-        // IMPORTANTE: Isso destrava a tela de loading
-        setLoading(false);
-      }
-    };
-
-    checkAuth();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
+  // Removemos todo o useEffect que fazia a verificação de login
+  
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
         <Layout>
           <Routes>
+            {/* Passamos isAuthenticated=true para a Home mostrar os botões de logado */}
             <Route 
               path="/" 
-              element={<Home isAuthenticated={isAuthenticated} />} 
+              element={<Home isAuthenticated={true} />} 
             />
-            {/* Rotas Protegidas - Só acessa se estiver logado */}
-            {isAuthenticated && (
-              <>
-                <Route path="/groups/:groupId" element={<GroupDetail />} />
-                <Route path="/orders/:orderId" element={<OrderDetail />} />
-              </>
-            )}
-            {/* Se tentar acessar rota protegida sem login, volta pra Home */}
+            
+            {/* Rotas liberadas sem verificação real */}
+            <Route path="/groups/:groupId" element={<GroupDetail />} />
+            <Route path="/orders/:orderId" element={<OrderDetail />} />
+            
+            {/* Rota padrão */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Layout>
