@@ -28,8 +28,8 @@ services:
   frontend:
     build: ./frontend
     restart: unless-stopped
-    ports:
-      - "80:80"
+    # REMOVIDO: ports: - "80:80" (Isso causava o conflito)
+    # O Coolify vai detectar automaticamente que o Dockerfile expõe a porta 80
     depends_on:
       - backend
     networks:
