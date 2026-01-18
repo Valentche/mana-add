@@ -7,11 +7,12 @@ import Home from './pages/Home';
 import GroupDetail from './pages/GroupDetail';
 import OrderDetail from './pages/OrderDetail';
 import { Loader2 } from 'lucide-react';
+import { Toaster } from "@/components/ui/sonner";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: false, // Não tentar reconectar infinitamente se der erro
+      retry: false,
       refetchOnWindowFocus: false,
     },
   },
@@ -24,15 +25,14 @@ function App() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        // Tenta verificar se o usuário está logado
-        const isAuth = await client.auth.isAuthenticated();
-        setIsAuthenticated(isAuth);
+        await client.auth.me();
+        setIsAuthenticated(true);
       } catch (error) {
-        console.error("Erro na verificação de auth:", error);
+        // Erro 401 é normal aqui (usuário não logado)
+        console.log("Usuário não está logado");
         setIsAuthenticated(false);
       } finally {
-        // O SEGREDO ESTÁ AQUI:
-        // Independente se deu certo ou erro (401), paramos de carregar.
+        // IMPORTANTE: Isso destrava a tela de loading
         setLoading(false);
       }
     };
@@ -51,26 +51,24 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
-        {isAuthenticated ? (
-          <Layout>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/groups/:groupId" element={<GroupDetail />} />
-              <Route path="/orders/:orderId" element={<OrderDetail />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </Layout>
-        ) : (
-          /* Se não estiver logado, mostra a Home (que tem o botão de Login) 
-             ou redireciona para uma página de login dedicada se você tiver. 
-             Assumindo que sua Home lida com o estado de deslogado: */
-          <Layout>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </Layout>
-        )}
+        <Layout>
+          <Routes>
+            <Route 
+              path="/" 
+              element={<Home isAuthenticated={isAuthenticated} />} 
+            />
+            {/* Rotas Protegidas - Só acessa se estiver logado */}
+            {isAuthenticated && (
+              <>
+                <Route path="/groups/:groupId" element={<GroupDetail />} />
+                <Route path="/orders/:orderId" element={<OrderDetail />} />
+              </>
+            )}
+            {/* Se tentar acessar rota protegida sem login, volta pra Home */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Layout>
+        <Toaster />
       </Router>
     </QueryClientProvider>
   );
