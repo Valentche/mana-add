@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api';
+// CORREÇÃO AQUI:
+// Mudamos de 'http://localhost:5000/api' para '/api'
+// Isso faz o navegador procurar a API no mesmo domínio do site.
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 const apiClient = axios.create({
   baseURL: API_URL,
