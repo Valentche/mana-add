@@ -8,7 +8,6 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
     volumes:
-      # MUDANÇA 1: Alterei o nome de 'mongodb_data' para 'mongodb_data_v2'
       - mongodb_data_v2:/data/db
     networks:
       - app-network
@@ -18,7 +17,6 @@ services:
     restart: unless-stopped
     environment:
       NODE_ENV: production
-      # Verifica se o usuário aqui é 'admin' para bater com o de cima
       MONGODB_URI: mongodb://admin:${MONGO_PASSWORD}@mongodb:27017/mtg-cards?authSource=admin
       JWT_SECRET: ${JWT_SECRET}
       CORS_ORIGIN: ${FRONTEND_URL}
@@ -27,8 +25,17 @@ services:
     networks:
       - app-network
 
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
 volumes:
-  # MUDANÇA 2: O nome aqui embaixo tem que bater com o lá de cima
   mongodb_data_v2:
 
 networks:
